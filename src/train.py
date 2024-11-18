@@ -39,6 +39,7 @@ class CustomDataset(Dataset):
 
 def make_transform():
     transform = transforms.Compose([
+        transforms.Resize((70, 70)),
         transforms.ToTensor()
     ])
     return transform
