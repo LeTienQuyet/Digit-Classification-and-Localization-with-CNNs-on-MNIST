@@ -1,4 +1,3 @@
-from tkinter import colorchooser, messagebox
 from PIL import ImageGrab, Image
 from predict import load_model
 from train import make_transform
@@ -8,7 +7,7 @@ import tkinter as tk
 import matplotlib.pyplot as plt
 
 class PaintApp:
-    def __init__(self, root, bg_color="black", text_color="white", width=420, height=420, size=3):
+    def __init__(self, root, bg_color="black", text_color="white", width=210, height=210, size=2):
         self.root = root
         self.bg_color = bg_color
         self.text_color = text_color
