@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 
+import argparse
 import os
 import torch
 import torch.nn as nn
@@ -109,7 +110,6 @@ def val_model(model, val_dataloader, classify_loss_fn, regression_loss_fn, optim
             total_val_loss += loss.item()
     return total_val_loss
 
-
 def train_model(num_epochs, model, train_dataloader, val_dataloader, classify_loss_fn, regression_loss_fn, optimizer,
                 device, path_to_save):
     model.train()
@@ -158,34 +158,40 @@ def train_model(num_epochs, model, train_dataloader, val_dataloader, classify_lo
     plt.grid()
     plt.show()
 
-def main():
+def main(num_epochs, lr, batch_size):
     train_dataloader, val_dataloader, test_dataloader = prepare_data(
         path_to_dir="../enlarged-mnist-data-with-bounding-boxes/mnist_img_with_bb",
         path_to_csv_file="../enlarged-mnist-data-with-bounding-boxes/mnist_img_enlarged_bb.csv",
-        transform=make_transform()
+        transform=make_transform(),
+        batch_size=batch_size
     )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"device: {device}")
+    print(f"Epochs = {num_epochs}, Learning rate = {lr}, Batch = {batch_size}, Device: {device}")
 
     out_channels = 10
-    print(f"out_channels = {out_channels}")
     model = CustomNeuralNetwork(out_channels)
 
-    optimizer = optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
 
     classify_loss_fn = nn.CrossEntropyLoss()
     regression_loss_fn = nn.MSELoss()
 
     train_model(
-        num_epochs=30, model=model, device=device,
+        num_epochs=num_epochs, model=model, device=device,
         train_dataloader=train_dataloader, val_dataloader=val_dataloader,
         classify_loss_fn=classify_loss_fn, regression_loss_fn=regression_loss_fn,
         optimizer=optimizer, path_to_save="../checkpoint/"
     )
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Hyper-parameters for training")
+    parser.add_argument("--epoch", type=int, help="No. of epochs for training", default=30)
+    parser.add_argument("--lr", type=float, help="Learning rate", default=1e-4)
+    parser.add_argument("--batch_size", type=int, help="Batch size", default=256)
+    args = parser.parse_args()
+
+    main(num_epochs=args.epoch, lr=args.lr, batch_size=args.batch_size)
 
 
 

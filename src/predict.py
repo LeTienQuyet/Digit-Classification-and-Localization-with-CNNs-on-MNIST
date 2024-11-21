@@ -1,7 +1,9 @@
 from train import CustomNeuralNetwork, make_transform
 from PIL import Image
+
 import os
 import torch
+import argparse
 
 def load_model(path_to_checkpoint, out_channels=10):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -19,12 +21,18 @@ def predict(model, path_to_img):
         class_out = torch.argmax(class_logits, dim=1)
     return class_out, bbox_out
 
-def main(path_to_checkpoint, path_to_img):
+def main(path_to_checkpoint, img_name):
     model = load_model(path_to_checkpoint)
+    path_to_img = os.path.join("../image", img_name)
     class_out, bbox_out = predict(model, path_to_img)
-    print(f"Number = {class_out.item()}, Bounding box = {bbox_out[0].tolist()}")
+    return class_out, bbox_out
 
 if __name__ == "__main__":
     path_to_checkpoint = "../checkpoint"
-    path_to_img = "../enlarged-mnist-data-with-bounding-boxes/mnist_img_with_bb/0/0_1.png"
-    main(path_to_checkpoint, path_to_img)
+
+    parser = argparse.ArgumentParser(description="Image for predict")
+    parser.add_argument("image", type=str, help="Name of image save in `image`")
+    args = parser.parse_args()
+
+    class_out, bbox_out = main(path_to_checkpoint, img_name=args.image)
+    print(f"Number = {class_out.item()}, Bounding box = {bbox_out[0].tolist()}")
