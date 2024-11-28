@@ -23,7 +23,7 @@ python train.py --epoch 100 --lr 0.0001 --batch_size 256
 ####  Make predictions for new images:
 Provided that the images are located in the **image** directory.
 ```
-python predict.py {image_name}
+python predict.py --image {image_name}
 ```
 #### Make predictions directly on your own drawings:
 ```
