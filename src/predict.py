@@ -56,4 +56,4 @@ if __name__ == "__main__":
     start_time = time.time()
     class_out, bbox_out = main(path_to_checkpoint, img_name=args.image)
     end_time = time.time()
-    print(f"Predicted time : {end_time - start_time:.4f} ms")
+    print(f"Predicted time : {end_time - start_time:.4f} s")
