@@ -96,7 +96,6 @@ class CustomNeuralNetwork(nn.Module):
 
 def val_model(model, val_dataloader, classify_loss_fn, regression_loss_fn, optimizer, device):
     model.eval()
-    model.to(device)
     total_val_loss = 0
 
     with torch.no_grad():
@@ -112,13 +111,13 @@ def val_model(model, val_dataloader, classify_loss_fn, regression_loss_fn, optim
 
 def train_model(num_epochs, model, train_dataloader, val_dataloader, classify_loss_fn, regression_loss_fn, optimizer,
                 device, path_to_save):
-    model.train()
     model.to(device)
     train_losses = []
     val_losses = []
     min_loss = float("inf")
 
     for epoch in range(num_epochs):
+        model.train()
         total_train_loss = 0
         for (img, label_target, bbox_target) in tqdm(train_dataloader, desc=f"Epoch {epoch + 1}", unit="batch",
                                                      colour="RED"):
